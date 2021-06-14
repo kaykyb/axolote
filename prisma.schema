@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model sync_meta {
+  id            Int                      @id
+  started_at    DateTime?                @db.Timestamptz(6)
+  completed_at  DateTime?                @db.Timestamptz(6)
+  duration_last Unsupported("interval")?
+
+  @@map("_sync_meta")
+}
+
+model books {
+  id             String    @id
+  created_time   DateTime? @db.Timestamptz(6)
+  num_of_pages   Decimal?  @db.Decimal
+  author         String?
+  cover_image    String[]
+  date_added     DateTime? @db.Timestamptz(6)
+  date_read      DateTime? @db.Date
+  genre          String[]
+  isbn13_asin    Decimal?  @db.Decimal
+  library        String?
+  link           String?
+  method_read    String?
+  metrics        String[]
+  month_read     String?
+  my_rating      Int?
+  my_review      String?
+  own            Boolean?  @default(false)
+  read_count     Decimal?  @db.Decimal
+  series         String?
+  status         String[]
+  synopsis       String?
+  title          String?
+  year_published String?
+  year_read      String?
+
+  @@index([genre], name: "genre_9xrw4cfofbphgl0_idx")
+  @@index([metrics], name: "metrics_lup8vi7pp08776v_idx")
+  @@index([status], name: "status_sr47jekyrfcnnt8_idx")
+}
+
+model genre {
+  id                 String    @id
+  created_time       DateTime? @db.Timestamptz(6)
+  books              String[]
+  name               String?
+  number_in_category Decimal?  @db.Decimal
+
+  @@index([books], name: "books_thfbh8fj441fuqz_idx")
+}
+
+model metrics {
+  id            String    @id
+  created_time  DateTime? @db.Timestamptz(6)
+  all_authors   String?
+  all_books     String[]
+  name          String?
+  total_authors Decimal?  @db.Decimal
+  total_books   Decimal?  @db.Decimal
+
+  @@index([all_books], name: "all_books_ysw4x8xgm73wchg_idx")
+}
+
+model recommended {
+  id           String    @id
+  created_time DateTime? @db.Timestamptz(6)
+  name         String?
+}
+
+model status {
+  id           String    @id
+  created_time DateTime? @db.Timestamptz(6)
+  books        String[]
+  count        Decimal?  @db.Decimal
+  name         String?
+
+  @@index([books], name: "books_r2b9aci2n1l9bqh_idx")
+}
